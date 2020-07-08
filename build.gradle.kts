@@ -34,7 +34,7 @@ application {
 }
 
 tasks.register("someTask") {
-    val destination = System.getProperty("someDestination") 
+    val destination = providers.systemProperty("someDestination")
     inputs.dir("source")
     outputs.dir(destination)
     doLast {
