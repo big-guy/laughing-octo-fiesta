@@ -35,11 +35,11 @@ application {
 
 tasks.register("someTask") {
     val destination = providers.systemProperty("someDestination")
-    inputs.dir("source")
+    inputs.dir("src")
     outputs.dir(destination)
     doLast {
         project.copy { 
-            from("source")
+            from("src")
             into(destination)
         }
     }
