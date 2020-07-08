@@ -33,14 +33,26 @@ application {
     mainClassName = "init.build.App"
 }
 
-tasks.register("someTask") {
-    val destination = providers.systemProperty("someDestination")
-    inputs.dir("src")
-    outputs.dir(destination)
-    doLast {
-        project.copy { 
-            from("src")
+open abstract class SomeTask : DefaultTask() {
+    @get:OutputDirectory
+    abstract val destination: DirectoryProperty
+    
+    @get:InputFiles
+    abstract val source: DirectoryProperty
+
+    @get:javax.inject.Inject
+    abstract val fileOperations: FileSystemOperations
+
+    @TaskAction
+    fun copyIt() {
+        fileOperations.copy { 
+            from(source)
             into(destination)
         }
     }
+}
+
+tasks.register("someTask", SomeTask::class.java) {
+    source.set(layout.projectDirectory.dir("src"))
+    destination.set(layout.projectDirectory.dir(providers.systemProperty("someDestination")))
 }
